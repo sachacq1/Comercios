@@ -1,0 +1,18 @@
+.truncated-text {
+    white-space: nowrap;
+    /* Evita que el texto se divida en varias líneas */
+    overflow: hidden;
+    /* Oculta el contenido que sobrepasa el contenedor */
+    text-overflow: ellipsis;
+    /* Muestra los puntos suspensivos (...) */
+}
+
+;
+
+.sucursal-item {
+    font-size: 0.9rem;
+    /* Tamaño más pequeño */
+    color: #4a4a4a;
+    /* Color gris */
+    margin-bottom: 5px;
+}
