@@ -1,6 +1,6 @@
 
 
-process.loadEnvFile()
+// process.loadEnvFile()
 
 const checkJwtSecret = (req, res, next) => {
     try {

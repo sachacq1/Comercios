@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import User from "../models/userModel.js";
 
-process.loadEnvFile()
+// process.loadEnvFile()
 
 // Middleware de autenticación
 const authMiddleware = (req, res, next) => {
