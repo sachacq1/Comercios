@@ -1,7 +1,7 @@
 
 import { MongoClient, ServerApiVersion } from "mongodb";
 
-process.loadEnvFile(); // Carga las variables de entorno desde .env
+//process.loadEnvFile(); // Carga las variables de entorno desde .env
 
 const uri = process.env.ATLAS_URI;
 let client;

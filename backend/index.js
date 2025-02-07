@@ -6,7 +6,7 @@ import { userRouter } from "./src/routes/userRouter.js";
 import cors from "cors";
 import { checkJwtSecret } from "./src/middlewares/envMiddleware.js";
 
-process.loadEnvFile();
+// process.loadEnvFile();
 const PORT = process.env.PORT
 
 const app = express();
