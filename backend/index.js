@@ -1,4 +1,5 @@
 import { connectDB } from "./src/config/mongo.js";
+import { connectDb } from "./src/config/atlasMongo.js";
 import express from "express";
 import { comercioRouter } from "./src/routes/comercioRouter.js";
 import { userRouter } from "./src/routes/userRouter.js";
@@ -21,7 +22,15 @@ app.use("/*", (req, res) => {
 
 })
 
-app.listen(PORT, () => {
-    connectDB()
-    console.log("Servidor en escucha en puerto" + PORT)
-})
+connectDB().then(() => {
+    app.listen(PORT, () => {
+        console.log(`🚀 Servidor en escucha en puerto ${PORT}`);
+    });
+}).catch(err => {
+    console.error("❌ No se pudo iniciar el servidor:", err);
+});
+
+//app.listen(PORT, () => {
+//    connectDb()
+//    console.log("Servidor en escucha en puerto" + PORT)
+//})
