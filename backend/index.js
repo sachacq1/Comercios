@@ -7,7 +7,7 @@ import cors from "cors";
 import { checkJwtSecret } from "./src/middlewares/envMiddleware.js";
 
 // process.loadEnvFile();
-const PORT = process.env.PORT
+const PORT = process.env.PORT || 4000
 
 const app = express();
 app.use(express.json());

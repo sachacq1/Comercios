@@ -1,10 +1,12 @@
 import mongoose from "mongoose";
 
-//process.loadEnvFile()
+// process.loadEnvFile()
 
 //const URI_DB = process.env.URI_DB;
 
 const URI_DB = process.env.ATLAS_URI;
+console.log("🔍 ATLAS_URI:", process.env.ATLAS_URI);
+
 const connectDB = async () => {
     try {
         await mongoose.connect(URI_DB);
