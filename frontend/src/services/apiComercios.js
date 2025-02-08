@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const apiCcio = axios.create({
-    baseURL: "http://localhost:4000/api",
+    baseURL: "https://comercios.onrender.com/api",
     headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`
     }
