@@ -8,6 +8,7 @@ import { checkJwtSecret } from "./src/middlewares/envMiddleware.js";
 
 // process.loadEnvFile();
 const PORT = process.env.PORT || 4000
+console.log(PORT)
 
 const app = express();
 app.use(express.json());
