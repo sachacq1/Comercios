@@ -3,7 +3,7 @@ import axios from 'axios'
 const loginUser = async (email, password) => {
 
     try {
-        const response = await axios.post("https://comercios.onrender.com/api/users/login", { email, password })
+        const response = await axios.post("https://comercios-production.up.railway.app/api/users/login", { email, password })
         return response.data
     } catch (error) {
         throw new Error("credenciales incorrectas", error)
@@ -12,7 +12,7 @@ const loginUser = async (email, password) => {
 
 const registerUser = async (username, email, password) => {
     try {
-        await axios.post("https://comercios.onrender.com//api/users/register", { username, email, password })
+        await axios.post("https://comercios-production.up.railway.app/api/users/register", { username, email, password })
         location.href = "/login"
     } catch (error) {
         throw new Error("Error al registrar usuario", error)
