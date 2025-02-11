@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 
-
 const comercioSchema = new mongoose.Schema({
     nombre: {
         type: String,
@@ -13,21 +12,37 @@ const comercioSchema = new mongoose.Schema({
     descripcion: {
         type: String,
         required: true
-    }
+    },
+    sucursales: [{
+        nombre: String,
+        direccion: String
+    }],
+    bases: {
+        siisa: { type: Boolean, default: false },
+        riesgonet: { type: Boolean, default: false },
+        pyp: { type: Boolean, default: false },
+        bcra: { type: Boolean, default: false }
+    },
+    plan: [{
+        nombre: String,
+        scores: [{
+            min: Number,
+            max: Number,
+            monto: Number
+        }]
+    }]
 }, {
     versionKey: false
-
-}
-);
+});
 
 const Comercio = mongoose.model("Comercio", comercioSchema);
 
 const getAllCcio = async () => {
     try {
         const comercios = await Comercio.find();
-        return comercios
+        return comercios;
     } catch (error) {
-        throw new Error("Error al obtener los comercios" + error.message);
+        throw new Error("Error al obtener los comercios: " + error.message);
     }
 };
 
@@ -35,41 +50,38 @@ const addCcio = async (dataCcio) => {
     try {
         const newComercio = new Comercio(dataCcio);
         await newComercio.save();
-        return newComercio
+        return newComercio;
     } catch (error) {
-        throw new Error("Error al crear comercio" + error.message);
-
+        throw new Error("Error al crear comercio: " + error.message);
     }
 };
-
 
 const getCcioById = async (id) => {
     try {
         const comercio = await Comercio.findById(id);
-        return comercio
+        return comercio;
     } catch (error) {
-        throw new Error("Error al obtener comercio por id" + error.message);
+        throw new Error("Error al obtener comercio por ID: " + error.message);
     }
-
-}
+};
 
 const updateCcio = async (id, dataCcio) => {
     try {
         const comercioUpdate = await Comercio.findByIdAndUpdate(id, dataCcio, { new: true });
-        return comercioUpdate
+        return comercioUpdate;
     } catch (error) {
-        throw new Error("Error al actualizar comercio" + error.message);
+        throw new Error("Error al actualizar comercio: " + error.message);
     }
-}
+};
 
 const deleteCcio = async (id) => {
     try {
         const comercioDelete = await Comercio.findByIdAndDelete(id);
         if (!comercioDelete) throw new Error("Comercio no encontrado");
-        return comercioDelete
+        return comercioDelete;
     } catch (error) {
-        throw new Error("Error al eliminar comercio" + error.message);
-
+        throw new Error("Error al eliminar comercio: " + error.message);
     }
-}
-export default { getAllCcio, addCcio, getCcioById, updateCcio, deleteCcio }
+};
+
+export default { getAllCcio, addCcio, getCcioById, updateCcio, deleteCcio };
