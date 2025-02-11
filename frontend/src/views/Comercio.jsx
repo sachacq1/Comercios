@@ -1,7 +1,7 @@
 import { getCcioById } from "../services/apiComercios.js";
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import './Comercio.css'
+import './Comercio.css';
 
 const Comercio = () => {
     const { id } = useParams();
@@ -28,6 +28,25 @@ const Comercio = () => {
         }
     };
 
+    // Función para mostrar las bases disponibles
+    const getBasesText = () => {
+        if (!comercio || !comercio.bases) return "";
+
+        const bases = comercio.bases;
+        const activeBases = [];
+
+        if (bases.siisa) activeBases.push("Siisa");
+        if (bases.riesgonet) activeBases.push("Riesgonet");
+        if (bases.pyp) activeBases.push("PyP");
+        if (bases.bcra) activeBases.push("BCRA");
+
+        if (activeBases.length === 0) {
+            return "Sin bases";
+        }
+
+        return `Bases: ${activeBases.join(" - ")}`;
+    };
+
     if (loading) {
         return <div className="has-text-centered">Cargando...</div>;
     }
@@ -46,14 +65,15 @@ const Comercio = () => {
                 <p>
                     <strong>Código:</strong> <span className="tag is-info">{comercio ? comercio.codigo : "N/A"}</span>
                 </p>
-                <h3 className="mt-5">Bases: Siisa - Riesgonet - PyP - BCRA</h3>
+                <h3 className="mt-5">{getBasesText()}</h3>
 
                 <div className="mt-4">
                     <h3 className="is-size-4">Sucursales</h3>
                     <div className="columns is-multiline">
-                        {comercio.sucursales && comercio.sucursales.map((sucursal, index) => (
+                        {comercio.sucursales?.map((sucursal, index) => (
                             <div className="column is-4" key={index}>
-                                <p className="sucursal-item">{sucursal.nombre} - {sucursal.direccion}</p>
+                                <p className="sucursal-item">{sucursal.nombre}</p>
+                                <p className="sucursal-item">{sucursal.direccion}</p>
                             </div>
                         ))}
                     </div>
@@ -64,33 +84,22 @@ const Comercio = () => {
                 </div>
 
                 <div className="columns is-centered mt-5">
-                    {comercio.plan && comercio.plan.map((plan, index) => (
+                    {comercio.plan?.map((plan, index) => (
                         <div className="column is-5" key={index}>
                             <div className="card">
                                 <div className="card-content">
-                                    <h3 className="title is-5">{plan.nombre}</h3>
+                                    <h3 className="title is-5">Plan {plan.nombre}</h3>
                                     <h4>Score</h4>
                                     {plan.scores.map((score, scoreIndex) => (
-                                        <p key={scoreIndex}>{score.min} a {score.max}: <span className="has-text-weight-bold">${score.monto.toLocaleString()}</span></p>
+                                        <p key={scoreIndex}>
+                                            {score.min} a {score.max}:{" "}
+                                            <span className="has-text-weight-bold">${score.monto.toLocaleString()}</span>
+                                        </p>
                                     ))}
                                 </div>
                             </div>
                         </div>
                     ))}
-                </div>
-
-                <div className="mt-4">
-                    <h3 className="is-size-4">Bases</h3>
-                    <ul>
-                        {comercio.bases.siisa && <li>Siisa: Sí</li>}
-                        {!comercio.bases.siisa && <li>Siisa: No</li>}
-                        {comercio.bases.riesgonet && <li>Riesgonet: Sí</li>}
-                        {!comercio.bases.riesgonet && <li>Riesgonet: No</li>}
-                        {comercio.bases.pyp && <li>PyP: Sí</li>}
-                        {!comercio.bases.pyp && <li>PyP: No</li>}
-                        {comercio.bases.bcra && <li>BCRA: Sí</li>}
-                        {!comercio.bases.bcra && <li>BCRA: No</li>}
-                    </ul>
                 </div>
             </div>
 
