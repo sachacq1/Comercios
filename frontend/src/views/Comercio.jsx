@@ -51,25 +51,11 @@ const Comercio = () => {
                 <div className="mt-4">
                     <h3 className="is-size-4">Sucursales</h3>
                     <div className="columns is-multiline">
-                        {/* Listado de sucursales simplificado */}
-                        <div className="column is-4">
-                            <p className="sucursal-item">Sucursal 1</p>
-                        </div>
-                        <div className="column is-4">
-                            <p className="sucursal-item">Sucursal 2</p>
-                        </div>
-                        <div className="column is-4">
-                            <p className="sucursal-item">Sucursal 3</p>
-                        </div>
-                        <div className="column is-4">
-                            <p className="sucursal-item">Sucursal 4</p>
-                        </div>
-                        <div className="column is-4">
-                            <p className="sucursal-item">Sucursal 5</p>
-                        </div>
-                        <div className="column is-4">
-                            <p className="sucursal-item">Sucursal 6</p>
-                        </div>
+                        {comercio.sucursales && comercio.sucursales.map((sucursal, index) => (
+                            <div className="column is-4" key={index}>
+                                <p className="sucursal-item">{sucursal.nombre} - {sucursal.direccion}</p>
+                            </div>
+                        ))}
                     </div>
                 </div>
 
@@ -78,29 +64,33 @@ const Comercio = () => {
                 </div>
 
                 <div className="columns is-centered mt-5">
-                    <div className="column is-5">
-                        <div className="card">
-                            <div className="card-content">
-                                <h3 className="title is-5">Plan STD</h3>
-                                <h4>Score</h4>
-                                <p>700 a 999: <span className="has-text-weight-bold">$300.000</span></p>
-                                <p>400 a 699: <span className="has-text-weight-bold">$200.000</span></p>
-                                <p>000 a 399: <span className="has-text-weight-bold">$150.000</span></p>
+                    {comercio.plan && comercio.plan.map((plan, index) => (
+                        <div className="column is-5" key={index}>
+                            <div className="card">
+                                <div className="card-content">
+                                    <h3 className="title is-5">{plan.nombre}</h3>
+                                    <h4>Score</h4>
+                                    {plan.scores.map((score, scoreIndex) => (
+                                        <p key={scoreIndex}>{score.min} a {score.max}: <span className="has-text-weight-bold">${score.monto.toLocaleString()}</span></p>
+                                    ))}
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    ))}
+                </div>
 
-                    <div className="column is-5">
-                        <div className="card">
-                            <div className="card-content">
-                                <h3 className="title is-5">Plan DNI</h3>
-                                <h4>Score</h4>
-                                <p>700 a 999: <span className="has-text-weight-bold">$200.000</span></p>
-                                <p>400 a 699: <span className="has-text-weight-bold">$150.000</span></p>
-                                <p>000 a 399: <span className="has-text-weight-bold">$120.000</span></p>
-                            </div>
-                        </div>
-                    </div>
+                <div className="mt-4">
+                    <h3 className="is-size-4">Bases</h3>
+                    <ul>
+                        {comercio.bases.siisa && <li>Siisa: Sí</li>}
+                        {!comercio.bases.siisa && <li>Siisa: No</li>}
+                        {comercio.bases.riesgonet && <li>Riesgonet: Sí</li>}
+                        {!comercio.bases.riesgonet && <li>Riesgonet: No</li>}
+                        {comercio.bases.pyp && <li>PyP: Sí</li>}
+                        {!comercio.bases.pyp && <li>PyP: No</li>}
+                        {comercio.bases.bcra && <li>BCRA: Sí</li>}
+                        {!comercio.bases.bcra && <li>BCRA: No</li>}
+                    </ul>
                 </div>
             </div>
 
