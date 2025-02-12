@@ -10,7 +10,8 @@ const AdminComerciosList = () => {
         codigo: 0,
         descripcion: "",
         sucursales: [],
-        planes: []
+        plan: "",
+        score: { min: 0, max: 0, monto: 0 }
     });
     const [isEditing, setIsEditing] = useState(false);
 
@@ -66,47 +67,10 @@ const AdminComerciosList = () => {
             codigo: 0,
             descripcion: "",
             sucursales: [],
-            planes: []
+            plan: "",
+            score: { min: 0, max: 0, monto: 0 }
         });
         setIsEditing(false);
-    };
-
-    const handleAddSucursal = () => {
-        setFormData({
-            ...formData,
-            sucursales: [...formData.sucursales, { nombre: "", direccion: "" }]
-        });
-    };
-
-    const handleSucursalChange = (index, field, value) => {
-        const updatedSucursales = [...formData.sucursales];
-        updatedSucursales[index][field] = value;
-        setFormData({ ...formData, sucursales: updatedSucursales });
-    };
-
-    const handleAddPlan = (nombre) => {
-        if (!formData.planes.some(plan => plan.nombre === nombre)) {
-            setFormData({
-                ...formData,
-                planes: [...formData.planes, { nombre, scores: [] }]
-            });
-        }
-    };
-
-    const handleAddScore = (planIndex) => {
-        const updatedPlanes = [...formData.planes];
-        updatedPlanes[planIndex].scores.push({ min: 0, max: 0, monto: 0 });
-        setFormData({ ...formData, planes: updatedPlanes });
-    };
-
-    const handleScoreChange = (planIndex, scoreIndex, field, value) => {
-        const updatedPlanes = [...formData.planes];
-        updatedPlanes[planIndex].scores[scoreIndex][field] = value;
-        setFormData({ ...formData, planes: updatedPlanes });
-    };
-
-    const handleGoToDetails = (id) => {
-        navigate(`/comercio/${id}`);
     };
 
     return (
@@ -124,7 +88,6 @@ const AdminComerciosList = () => {
                                     <div className="buttons is-right">
                                         <button className="button is-warning" onClick={() => handleEdit(comercio)}>Editar</button>
                                         <button className="button is-danger" onClick={() => handleDelete(comercio._id)}>Eliminar</button>
-                                        <button className="button is-info" onClick={() => handleGoToDetails(comercio._id)}>Ver Detalles</button>
                                     </div>
                                 </div>
                             </div>
@@ -134,18 +97,31 @@ const AdminComerciosList = () => {
                 <div className="box">
                     <h2 className="subtitle is-4">{isEditing ? "Actualizar Comercio" : "Agregar Nuevo Comercio"}</h2>
                     <form onSubmit={handleSubmit}>
-                        <input className="input" type="text" placeholder="Nombre" value={formData.nombre} onChange={(e) => setFormData({ ...formData, nombre: e.target.value })} required />
-                        <input className="input" type="number" placeholder="Código" value={formData.codigo} onChange={(e) => setFormData({ ...formData, codigo: parseInt(e.target.value) })} required />
-                        <textarea className="textarea" placeholder="Descripción" value={formData.descripcion} onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })} required />
-                        <button type="button" className="button is-link" onClick={handleAddSucursal}>Agregar Sucursal</button>
-                        {formData.sucursales.map((sucursal, index) => (
-                            <div key={index}>
-                                <input className="input" type="text" placeholder="Nombre Sucursal" value={sucursal.nombre} onChange={(e) => handleSucursalChange(index, 'nombre', e.target.value)} />
-                                <input className="input" type="text" placeholder="Dirección" value={sucursal.direccion} onChange={(e) => handleSucursalChange(index, 'direccion', e.target.value)} />
-                            </div>
-                        ))}
-                        <button type="button" className="button is-link" onClick={() => handleAddPlan("STD")}>Agregar Plan STD</button>
-                        <button type="button" className="button is-link" onClick={() => handleAddPlan("DNI")}>Agregar Plan DNI</button>
+                        <label className="label">Nombre</label>
+                        <input className="input" name="nombre" type="text" placeholder="Nombre" value={formData.nombre} onChange={(e) => setFormData({ ...formData, nombre: e.target.value })} required />
+
+                        <label className="label">Código</label>
+                        <input className="input" name="codigo" type="number" placeholder="Código" value={formData.codigo} onChange={(e) => setFormData({ ...formData, codigo: parseInt(e.target.value) })} required />
+
+                        <label className="label">Descripción</label>
+                        <textarea className="textarea" name="descripcion" placeholder="Descripción" value={formData.descripcion} onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })} required />
+
+                        <label className="label">Selecciona un Plan</label>
+                        <div className="select">
+                            <select value={formData.plan} onChange={(e) => setFormData({ ...formData, plan: e.target.value })} required>
+                                <option value="">Seleccione un plan</option>
+                                <option value="STD">STD</option>
+                                <option value="DNI">DNI</option>
+                            </select>
+                        </div>
+
+                        <label className="label">Score</label>
+                        <div className="field is-grouped">
+                            <input className="input" type="number" placeholder="Min" value={formData.score.min} onChange={(e) => setFormData({ ...formData, score: { ...formData.score, min: parseInt(e.target.value) } })} required />
+                            <input className="input" type="number" placeholder="Max" value={formData.score.max} onChange={(e) => setFormData({ ...formData, score: { ...formData.score, max: parseInt(e.target.value) } })} required />
+                            <input className="input" type="number" placeholder="Monto" value={formData.score.monto} onChange={(e) => setFormData({ ...formData, score: { ...formData.score, monto: parseInt(e.target.value) } })} required />
+                        </div>
+
                         <button className="button is-primary" type="submit">{isEditing ? "Actualizar Comercio" : "Guardar Comercio"}</button>
                         <button className="button is-light" type="button" onClick={resetForm}>Cancelar</button>
                     </form>
