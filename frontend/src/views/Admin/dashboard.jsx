@@ -12,6 +12,10 @@ const AdminComerciosList = () => {
         sucursales: [],
         scoreSTD: [],
         scoreDNI: [],
+        montoSTDMin: 0,
+        montoSTDMax: 0,
+        montoDNIMin: 0,
+        montoDNIMax: 0,
     });
     const [isEditing, setIsEditing] = useState(false);
     const [hasScoreSTD, setHasScoreSTD] = useState(false);
@@ -73,6 +77,10 @@ const AdminComerciosList = () => {
             sucursales: [],
             scoreSTD: [],
             scoreDNI: [],
+            montoSTDMin: 0,
+            montoSTDMax: 0,
+            montoDNIMin: 0,
+            montoDNIMax: 0,
         });
         setIsEditing(false);
         setHasScoreSTD(false);
@@ -129,7 +137,7 @@ const AdminComerciosList = () => {
                             Tiene score STD
                         </label>
 
-                        {hasScoreSTD && (
+                        {hasScoreSTD ? (
                             <>
                                 {formData.scoreSTD.map((score, index) => (
                                     <div key={index} className="field is-grouped">
@@ -140,6 +148,14 @@ const AdminComerciosList = () => {
                                 ))}
                                 <button type="button" className="button is-link" onClick={() => addScore("scoreSTD")}>Agregar Rango STD</button>
                             </>
+                        ) : (
+                            <>
+                                <label className="label">Monto Plan STD</label>
+                                <div className="field is-grouped">
+                                    <input className="input" type="number" placeholder="Monto Mínimo" value={formData.montoSTDMin} onChange={(e) => setFormData({ ...formData, montoSTDMin: parseInt(e.target.value) })} required />
+                                    <input className="input" type="number" placeholder="Monto Máximo" value={formData.montoSTDMax} onChange={(e) => setFormData({ ...formData, montoSTDMax: parseInt(e.target.value) })} required />
+                                </div>
+                            </>
                         )}
 
                         {/* Preguntar si tiene score DNI */}
@@ -148,7 +164,7 @@ const AdminComerciosList = () => {
                             Tiene score DNI
                         </label>
 
-                        {hasScoreDNI && (
+                        {hasScoreDNI ? (
                             <>
                                 {formData.scoreDNI.map((score, index) => (
                                     <div key={index} className="field is-grouped">
@@ -158,6 +174,14 @@ const AdminComerciosList = () => {
                                     </div>
                                 ))}
                                 <button type="button" className="button is-link" onClick={() => addScore("scoreDNI")}>Agregar Rango DNI</button>
+                            </>
+                        ) : (
+                            <>
+                                <label className="label">Monto Plan DNI</label>
+                                <div className="field is-grouped">
+                                    <input className="input" type="number" placeholder="Monto Mínimo" value={formData.montoDNIMin} onChange={(e) => setFormData({ ...formData, montoDNIMin: parseInt(e.target.value) })} required />
+                                    <input className="input" type="number" placeholder="Monto Máximo" value={formData.montoDNIMax} onChange={(e) => setFormData({ ...formData, montoDNIMax: parseInt(e.target.value) })} required />
+                                </div>
                             </>
                         )}
 
