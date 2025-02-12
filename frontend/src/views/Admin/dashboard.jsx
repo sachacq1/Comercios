@@ -11,7 +11,7 @@ const AdminComerciosList = () => {
         descripcion: "",
         sucursales: [],
         plan: "",
-        score: { min: 0, max: 0, monto: 0 }
+        score: { minimo: 0, maximo: 0, monto: 0 }
     });
     const [isEditing, setIsEditing] = useState(false);
 
@@ -68,9 +68,13 @@ const AdminComerciosList = () => {
             descripcion: "",
             sucursales: [],
             plan: "",
-            score: { min: 0, max: 0, monto: 0 }
+            score: { minimo: 0, maximo: 0, monto: 0 }
         });
         setIsEditing(false);
+    };
+
+    const handleGoToDetails = (id) => {
+        navigate(`/comercio/${id}`);
     };
 
     return (
@@ -88,6 +92,7 @@ const AdminComerciosList = () => {
                                     <div className="buttons is-right">
                                         <button className="button is-warning" onClick={() => handleEdit(comercio)}>Editar</button>
                                         <button className="button is-danger" onClick={() => handleDelete(comercio._id)}>Eliminar</button>
+                                        <button className="button is-info" onClick={() => handleGoToDetails(comercio._id)}>Ver Detalles</button>
                                     </div>
                                 </div>
                             </div>
@@ -117,9 +122,9 @@ const AdminComerciosList = () => {
 
                         <label className="label">Score</label>
                         <div className="field is-grouped">
-                            <input className="input" type="number" placeholder="Min" value={formData.score.min} onChange={(e) => setFormData({ ...formData, score: { ...formData.score, min: parseInt(e.target.value) } })} required />
-                            <input className="input" type="number" placeholder="Max" value={formData.score.max} onChange={(e) => setFormData({ ...formData, score: { ...formData.score, max: parseInt(e.target.value) } })} required />
-                            <input className="input" type="number" placeholder="Monto" value={formData.score.monto} onChange={(e) => setFormData({ ...formData, score: { ...formData.score, monto: parseInt(e.target.value) } })} required />
+                            <input className="input" name="minimo" type="number" placeholder="Mínimo" value={formData.score.minimo} onChange={(e) => setFormData({ ...formData, score: { ...formData.score, minimo: parseInt(e.target.value) } })} required />
+                            <input className="input" name="maximo" type="number" placeholder="Máximo" value={formData.score.maximo} onChange={(e) => setFormData({ ...formData, score: { ...formData.score, maximo: parseInt(e.target.value) } })} required />
+                            <input className="input" name="monto" type="number" placeholder="Monto" value={formData.score.monto} onChange={(e) => setFormData({ ...formData, score: { ...formData.score, monto: parseInt(e.target.value) } })} required />
                         </div>
 
                         <button className="button is-primary" type="submit">{isEditing ? "Actualizar Comercio" : "Guardar Comercio"}</button>
