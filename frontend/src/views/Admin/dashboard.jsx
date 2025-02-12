@@ -9,7 +9,15 @@ const AdminComerciosList = () => {
         _id: "",
         nombre: "",
         codigo: 0,
-        descripcion: ""
+        descripcion: "",
+        sucursales: [],
+        bases: {
+            siisa: false,
+            riesgonet: false,
+            pyp: false,
+            bcra: false
+        },
+        planes: []
     });
     const [isEditing, setIsEditing] = useState(false);
 
@@ -34,10 +42,8 @@ const AdminComerciosList = () => {
             if (isEditing) {
                 await updateCcio(formData._id, formData);
             } else {
-                console.log(formData);
                 await addCcio(formData);
             }
-
             fetchComercios();
         } catch (error) {
             console.error("Error al guardar comercio", error);
@@ -62,17 +68,20 @@ const AdminComerciosList = () => {
 
     const resetForm = () => {
         setFormData({
-            id: "",
+            _id: "",
             nombre: "",
             codigo: 0,
-            descripcion: ""
+            descripcion: "",
+            sucursales: [],
+            bases: {
+                siisa: false,
+                riesgonet: false,
+                pyp: false,
+                bcra: false
+            },
+            planes: []
         });
         setIsEditing(false);
-    };
-
-    // Función para redirigir a la página de detalles de un comercio
-    const handleGoToDetails = (id) => {
-        navigate(`/comercio/${id}`); // Redirige a la página de detalles del comercio
     };
 
     return (
@@ -80,105 +89,74 @@ const AdminComerciosList = () => {
             <div className="container">
                 <h1 className="title is-3">Lista de Comercios</h1>
 
-                {/* Lista de Comercios */}
-                <div className="columns is-multiline">
-                    {comercios.map((comercio) => (
-                        <div key={comercio._id} className="column is-4">
-                            <div className="card">
-                                <div className="card-content">
-                                    <h3 className="title is-5">{comercio.nombre}</h3>
-                                    <p><strong>Código:</strong> {comercio.codigo}</p>
-                                    <p><strong>Descripción:</strong> {comercio.descripcion}</p>
-
-                                    {/* Botones de Editar, Eliminar y Ver Detalles */}
-                                    <div className="buttons is-right">
-                                        <button
-                                            className="button is-warning"
-                                            onClick={() => handleEdit(comercio)}
-                                        >
-                                            Editar
-                                        </button>
-                                        <button
-                                            className="button is-danger"
-                                            onClick={() => handleDelete(comercio._id)}
-                                        >
-                                            Eliminar
-                                        </button>
-                                        <button
-                                            className="button is-info"
-                                            style={{ cursor: "pointer" }}
-                                            onClick={() => handleGoToDetails(comercio._id)} // Llama a la función de redirección
-                                        >
-                                            Ver Detalles
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
                 {/* Formulario para agregar/completar comercio */}
                 <div className="box">
                     <h2 className="subtitle is-4">{isEditing ? "Actualizar Comercio" : "Agregar Nuevo Comercio"}</h2>
                     <form onSubmit={handleSubmit}>
-                        <div className="field">
-                            <label className="label">Nombre</label>
-                            <div className="control">
-                                <input
-                                    className="input"
-                                    type="text"
-                                    placeholder="Nombre del comercio"
-                                    value={formData.nombre}
-                                    onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
-                                    required
-                                />
-                            </div>
-                        </div>
+                        <input type="text" placeholder="Nombre" value={formData.nombre} onChange={(e) => setFormData({ ...formData, nombre: e.target.value })} required />
+                        <input type="number" placeholder="Código" value={formData.codigo} onChange={(e) => setFormData({ ...formData, codigo: parseInt(e.target.value) })} required />
+                        <textarea placeholder="Descripción" value={formData.descripcion} onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })} required></textarea>
 
-                        <div className="field">
-                            <label className="label">Código</label>
-                            <div className="control">
-                                <input
-                                    className="input"
-                                    type="number"
-                                    placeholder="Código del comercio"
-                                    value={formData.codigo}
-                                    onChange={(e) => setFormData({ ...formData, codigo: parseInt(e.target.value) })}
-                                    required
-                                />
+                        {/* Inputs dinámicos para sucursales */}
+                        <h3>Sucursales</h3>
+                        {formData.sucursales.map((sucursal, index) => (
+                            <div key={index}>
+                                <input type="text" placeholder="Nombre de la sucursal" value={sucursal.nombre} onChange={(e) => {
+                                    const newSucursales = [...formData.sucursales];
+                                    newSucursales[index].nombre = e.target.value;
+                                    setFormData({ ...formData, sucursales: newSucursales });
+                                }} />
+                                <input type="text" placeholder="Dirección" value={sucursal.direccion} onChange={(e) => {
+                                    const newSucursales = [...formData.sucursales];
+                                    newSucursales[index].direccion = e.target.value;
+                                    setFormData({ ...formData, sucursales: newSucursales });
+                                }} />
                             </div>
-                        </div>
+                        ))}
+                        <button type="button" onClick={() => setFormData({ ...formData, sucursales: [...formData.sucursales, { nombre: "", direccion: "" }] })}>Añadir Sucursal</button>
 
-                        <div className="field">
-                            <label className="label">Descripción</label>
-                            <div className="control">
-                                <textarea
-                                    className="textarea"
-                                    placeholder="Descripción del comercio"
-                                    value={formData.descripcion}
-                                    onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
-                                    required
-                                ></textarea>
+                        {/* Planes y Scores */}
+                        <h3>Planes</h3>
+                        {formData.planes.map((plan, pIndex) => (
+                            <div key={pIndex}>
+                                <select value={plan.nombre} onChange={(e) => {
+                                    const newPlanes = [...formData.planes];
+                                    newPlanes[pIndex].nombre = e.target.value;
+                                    setFormData({ ...formData, planes: newPlanes });
+                                }}>
+                                    <option value="STD">STD</option>
+                                    <option value="DNI">DNI</option>
+                                </select>
+                                {plan.scores.map((score, sIndex) => (
+                                    <div key={sIndex}>
+                                        <input type="number" placeholder="Min Score" value={score.min} onChange={(e) => {
+                                            const newScores = [...plan.scores];
+                                            newScores[sIndex].min = parseInt(e.target.value);
+                                            const newPlanes = [...formData.planes];
+                                            newPlanes[pIndex].scores = newScores;
+                                            setFormData({ ...formData, planes: newPlanes });
+                                        }} />
+                                        <input type="number" placeholder="Max Score" value={score.max} onChange={(e) => {
+                                            const newScores = [...plan.scores];
+                                            newScores[sIndex].max = parseInt(e.target.value);
+                                            const newPlanes = [...formData.planes];
+                                            newPlanes[pIndex].scores = newScores;
+                                            setFormData({ ...formData, planes: newPlanes });
+                                        }} />
+                                        <input type="number" placeholder="Monto" value={score.monto} onChange={(e) => {
+                                            const newScores = [...plan.scores];
+                                            newScores[sIndex].monto = parseInt(e.target.value);
+                                            const newPlanes = [...formData.planes];
+                                            newPlanes[pIndex].scores = newScores;
+                                            setFormData({ ...formData, planes: newPlanes });
+                                        }} />
+                                    </div>
+                                ))}
                             </div>
-                        </div>
+                        ))}
+                        <button type="button" onClick={() => setFormData({ ...formData, planes: [...formData.planes, { nombre: "STD", scores: [] }] })}>Añadir Plan</button>
 
-                        <div className="field is-grouped">
-                            <div className="control">
-                                <button className="button is-primary" type="submit">
-                                    {isEditing ? "Actualizar Comercio" : "Guardar Comercio"}
-                                </button>
-                            </div>
-                            <div className="control">
-                                <button
-                                    className="button is-light"
-                                    type="button"
-                                    onClick={resetForm}
-                                >
-                                    Cancelar
-                                </button>
-                            </div>
-                        </div>
+                        <button type="submit">{isEditing ? "Actualizar Comercio" : "Guardar Comercio"}</button>
                     </form>
                 </div>
             </div>
