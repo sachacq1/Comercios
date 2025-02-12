@@ -10,8 +10,8 @@ const AdminComerciosList = () => {
         codigo: 0,
         descripcion: "",
         sucursales: [],
-        plan: "",
-        score: { minimo: 0, maximo: 0, monto: 0 }
+        scoreSTD: { min: 0, max: 0, monto: 0 },
+        scoreDNI: { min: 0, max: 0, monto: 0 }
     });
     const [isEditing, setIsEditing] = useState(false);
 
@@ -67,14 +67,10 @@ const AdminComerciosList = () => {
             codigo: 0,
             descripcion: "",
             sucursales: [],
-            plan: "",
-            score: { minimo: 0, maximo: 0, monto: 0 }
+            scoreSTD: { min: 0, max: 0, monto: 0 },
+            scoreDNI: { min: 0, max: 0, monto: 0 }
         });
         setIsEditing(false);
-    };
-
-    const handleGoToDetails = (id) => {
-        navigate(`/comercio/${id}`);
     };
 
     return (
@@ -92,7 +88,6 @@ const AdminComerciosList = () => {
                                     <div className="buttons is-right">
                                         <button className="button is-warning" onClick={() => handleEdit(comercio)}>Editar</button>
                                         <button className="button is-danger" onClick={() => handleDelete(comercio._id)}>Eliminar</button>
-                                        <button className="button is-info" onClick={() => handleGoToDetails(comercio._id)}>Ver Detalles</button>
                                     </div>
                                 </div>
                             </div>
@@ -106,25 +101,33 @@ const AdminComerciosList = () => {
                         <input className="input" name="nombre" type="text" placeholder="Nombre" value={formData.nombre} onChange={(e) => setFormData({ ...formData, nombre: e.target.value })} required />
 
                         <label className="label">Código</label>
-                        <input className="input" name="codigo" type="number" placeholder="Código" value={formData.codigo} onChange={(e) => setFormData({ ...formData, codigo: parseInt(e.target.value) })} required />
+                        <input className="input" name="codigo" type="number" placeholder="Código" value={formData.codigo} onChange={(e) => setFormData({ ...formData, codigo: parseInt(e.target.value) })} required style={{ appearance: "textfield", MozAppearance: "textfield" }} />
 
                         <label className="label">Descripción</label>
                         <textarea className="textarea" name="descripcion" placeholder="Descripción" value={formData.descripcion} onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })} required />
 
-                        <label className="label">Selecciona un Plan</label>
-                        <div className="select">
-                            <select value={formData.plan} onChange={(e) => setFormData({ ...formData, plan: e.target.value })} required>
-                                <option value="">Seleccione un plan</option>
-                                <option value="STD">STD</option>
-                                <option value="DNI">DNI</option>
-                            </select>
+                        {/* Plan STD */}
+                        <h3 className="subtitle is-5">Plan STD</h3>
+                        <div className="field is-grouped">
+                            {!(formData.scoreSTD.min === 0 && formData.scoreSTD.max === 0) && (
+                                <>
+                                    <input className="input" name="std-min" type="number" placeholder="Min" value={formData.scoreSTD.min} onChange={(e) => setFormData({ ...formData, scoreSTD: { ...formData.scoreSTD, min: parseInt(e.target.value) } })} required />
+                                    <input className="input" name="std-max" type="number" placeholder="Max" value={formData.scoreSTD.max} onChange={(e) => setFormData({ ...formData, scoreSTD: { ...formData.scoreSTD, max: parseInt(e.target.value) } })} required />
+                                </>
+                            )}
+                            <input className="input" name="std-monto" type="number" placeholder="Monto" value={formData.scoreSTD.monto} onChange={(e) => setFormData({ ...formData, scoreSTD: { ...formData.scoreSTD, monto: parseInt(e.target.value) } })} required />
                         </div>
 
-                        <label className="label">Score</label>
+                        {/* Plan DNI */}
+                        <h3 className="subtitle is-5">Plan DNI</h3>
                         <div className="field is-grouped">
-                            <input className="input" name="minimo" type="number" placeholder="Mínimo" value={formData.score.minimo} onChange={(e) => setFormData({ ...formData, score: { ...formData.score, minimo: parseInt(e.target.value) } })} required />
-                            <input className="input" name="maximo" type="number" placeholder="Máximo" value={formData.score.maximo} onChange={(e) => setFormData({ ...formData, score: { ...formData.score, maximo: parseInt(e.target.value) } })} required />
-                            <input className="input" name="monto" type="number" placeholder="Monto" value={formData.score.monto} onChange={(e) => setFormData({ ...formData, score: { ...formData.score, monto: parseInt(e.target.value) } })} required />
+                            {!(formData.scoreDNI.min === 0 && formData.scoreDNI.max === 0) && (
+                                <>
+                                    <input className="input" name="dni-min" type="number" placeholder="Min" value={formData.scoreDNI.min} onChange={(e) => setFormData({ ...formData, scoreDNI: { ...formData.scoreDNI, min: parseInt(e.target.value) } })} required />
+                                    <input className="input" name="dni-max" type="number" placeholder="Max" value={formData.scoreDNI.max} onChange={(e) => setFormData({ ...formData, scoreDNI: { ...formData.scoreDNI, max: parseInt(e.target.value) } })} required />
+                                </>
+                            )}
+                            <input className="input" name="dni-monto" type="number" placeholder="Monto" value={formData.scoreDNI.monto} onChange={(e) => setFormData({ ...formData, scoreDNI: { ...formData.scoreDNI, monto: parseInt(e.target.value) } })} required />
                         </div>
 
                         <button className="button is-primary" type="submit">{isEditing ? "Actualizar Comercio" : "Guardar Comercio"}</button>
