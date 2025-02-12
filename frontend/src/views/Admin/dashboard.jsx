@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // Importar useNavigate
+import { useNavigate } from "react-router-dom";
 import { addCcio, getCcio, updateCcio, deleteCcio } from "../../services/apiComercios.js";
 
 const AdminComerciosList = () => {
-
     const [comercios, setComercios] = useState([]);
     const [formData, setFormData] = useState({
         _id: "",
@@ -11,17 +10,11 @@ const AdminComerciosList = () => {
         codigo: 0,
         descripcion: "",
         sucursales: [],
-        bases: {
-            siisa: false,
-            riesgonet: false,
-            pyp: false,
-            bcra: false
-        },
         planes: []
     });
     const [isEditing, setIsEditing] = useState(false);
 
-    const navigate = useNavigate(); // Inicializar useNavigate
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchComercios();
@@ -73,90 +66,88 @@ const AdminComerciosList = () => {
             codigo: 0,
             descripcion: "",
             sucursales: [],
-            bases: {
-                siisa: false,
-                riesgonet: false,
-                pyp: false,
-                bcra: false
-            },
             planes: []
         });
         setIsEditing(false);
+    };
+
+    const handleAddSucursal = () => {
+        setFormData({
+            ...formData,
+            sucursales: [...formData.sucursales, { nombre: "", direccion: "" }]
+        });
+    };
+
+    const handleSucursalChange = (index, field, value) => {
+        const updatedSucursales = [...formData.sucursales];
+        updatedSucursales[index][field] = value;
+        setFormData({ ...formData, sucursales: updatedSucursales });
+    };
+
+    const handleAddPlan = (nombre) => {
+        if (!formData.planes.some(plan => plan.nombre === nombre)) {
+            setFormData({
+                ...formData,
+                planes: [...formData.planes, { nombre, scores: [] }]
+            });
+        }
+    };
+
+    const handleAddScore = (planIndex) => {
+        const updatedPlanes = [...formData.planes];
+        updatedPlanes[planIndex].scores.push({ min: 0, max: 0, monto: 0 });
+        setFormData({ ...formData, planes: updatedPlanes });
+    };
+
+    const handleScoreChange = (planIndex, scoreIndex, field, value) => {
+        const updatedPlanes = [...formData.planes];
+        updatedPlanes[planIndex].scores[scoreIndex][field] = value;
+        setFormData({ ...formData, planes: updatedPlanes });
+    };
+
+    const handleGoToDetails = (id) => {
+        navigate(`/comercio/${id}`);
     };
 
     return (
         <>
             <div className="container">
                 <h1 className="title is-3">Lista de Comercios</h1>
-
-                {/* Formulario para agregar/completar comercio */}
+                <div className="columns is-multiline">
+                    {comercios.map((comercio) => (
+                        <div key={comercio._id} className="column is-4">
+                            <div className="card">
+                                <div className="card-content">
+                                    <h3 className="title is-5">{comercio.nombre}</h3>
+                                    <p><strong>Código:</strong> {comercio.codigo}</p>
+                                    <p><strong>Descripción:</strong> {comercio.descripcion}</p>
+                                    <div className="buttons is-right">
+                                        <button className="button is-warning" onClick={() => handleEdit(comercio)}>Editar</button>
+                                        <button className="button is-danger" onClick={() => handleDelete(comercio._id)}>Eliminar</button>
+                                        <button className="button is-info" onClick={() => handleGoToDetails(comercio._id)}>Ver Detalles</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
                 <div className="box">
                     <h2 className="subtitle is-4">{isEditing ? "Actualizar Comercio" : "Agregar Nuevo Comercio"}</h2>
                     <form onSubmit={handleSubmit}>
-                        <input type="text" placeholder="Nombre" value={formData.nombre} onChange={(e) => setFormData({ ...formData, nombre: e.target.value })} required />
-                        <input type="number" placeholder="Código" value={formData.codigo} onChange={(e) => setFormData({ ...formData, codigo: parseInt(e.target.value) })} required />
-                        <textarea placeholder="Descripción" value={formData.descripcion} onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })} required></textarea>
-
-                        {/* Inputs dinámicos para sucursales */}
-                        <h3>Sucursales</h3>
+                        <input className="input" type="text" placeholder="Nombre" value={formData.nombre} onChange={(e) => setFormData({ ...formData, nombre: e.target.value })} required />
+                        <input className="input" type="number" placeholder="Código" value={formData.codigo} onChange={(e) => setFormData({ ...formData, codigo: parseInt(e.target.value) })} required />
+                        <textarea className="textarea" placeholder="Descripción" value={formData.descripcion} onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })} required />
+                        <button type="button" className="button is-link" onClick={handleAddSucursal}>Agregar Sucursal</button>
                         {formData.sucursales.map((sucursal, index) => (
                             <div key={index}>
-                                <input type="text" placeholder="Nombre de la sucursal" value={sucursal.nombre} onChange={(e) => {
-                                    const newSucursales = [...formData.sucursales];
-                                    newSucursales[index].nombre = e.target.value;
-                                    setFormData({ ...formData, sucursales: newSucursales });
-                                }} />
-                                <input type="text" placeholder="Dirección" value={sucursal.direccion} onChange={(e) => {
-                                    const newSucursales = [...formData.sucursales];
-                                    newSucursales[index].direccion = e.target.value;
-                                    setFormData({ ...formData, sucursales: newSucursales });
-                                }} />
+                                <input className="input" type="text" placeholder="Nombre Sucursal" value={sucursal.nombre} onChange={(e) => handleSucursalChange(index, 'nombre', e.target.value)} />
+                                <input className="input" type="text" placeholder="Dirección" value={sucursal.direccion} onChange={(e) => handleSucursalChange(index, 'direccion', e.target.value)} />
                             </div>
                         ))}
-                        <button type="button" onClick={() => setFormData({ ...formData, sucursales: [...formData.sucursales, { nombre: "", direccion: "" }] })}>Añadir Sucursal</button>
-
-                        {/* Planes y Scores */}
-                        <h3>Planes</h3>
-                        {formData.planes.map((plan, pIndex) => (
-                            <div key={pIndex}>
-                                <select value={plan.nombre} onChange={(e) => {
-                                    const newPlanes = [...formData.planes];
-                                    newPlanes[pIndex].nombre = e.target.value;
-                                    setFormData({ ...formData, planes: newPlanes });
-                                }}>
-                                    <option value="STD">STD</option>
-                                    <option value="DNI">DNI</option>
-                                </select>
-                                {plan.scores.map((score, sIndex) => (
-                                    <div key={sIndex}>
-                                        <input type="number" placeholder="Min Score" value={score.min} onChange={(e) => {
-                                            const newScores = [...plan.scores];
-                                            newScores[sIndex].min = parseInt(e.target.value);
-                                            const newPlanes = [...formData.planes];
-                                            newPlanes[pIndex].scores = newScores;
-                                            setFormData({ ...formData, planes: newPlanes });
-                                        }} />
-                                        <input type="number" placeholder="Max Score" value={score.max} onChange={(e) => {
-                                            const newScores = [...plan.scores];
-                                            newScores[sIndex].max = parseInt(e.target.value);
-                                            const newPlanes = [...formData.planes];
-                                            newPlanes[pIndex].scores = newScores;
-                                            setFormData({ ...formData, planes: newPlanes });
-                                        }} />
-                                        <input type="number" placeholder="Monto" value={score.monto} onChange={(e) => {
-                                            const newScores = [...plan.scores];
-                                            newScores[sIndex].monto = parseInt(e.target.value);
-                                            const newPlanes = [...formData.planes];
-                                            newPlanes[pIndex].scores = newScores;
-                                            setFormData({ ...formData, planes: newPlanes });
-                                        }} />
-                                    </div>
-                                ))}
-                            </div>
-                        ))}
-                        <button type="button" onClick={() => setFormData({ ...formData, planes: [...formData.planes, { nombre: "STD", scores: [] }] })}>Añadir Plan</button>
-
-                        <button type="submit">{isEditing ? "Actualizar Comercio" : "Guardar Comercio"}</button>
+                        <button type="button" className="button is-link" onClick={() => handleAddPlan("STD")}>Agregar Plan STD</button>
+                        <button type="button" className="button is-link" onClick={() => handleAddPlan("DNI")}>Agregar Plan DNI</button>
+                        <button className="button is-primary" type="submit">{isEditing ? "Actualizar Comercio" : "Guardar Comercio"}</button>
+                        <button className="button is-light" type="button" onClick={resetForm}>Cancelar</button>
                     </form>
                 </div>
             </div>
